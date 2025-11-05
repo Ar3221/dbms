@@ -1,27 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navigation from './components/Navigation';
+import Dashboard from './components/Dashboard';
 import Artists from './components/Artists';
 import Albums from './components/Albums';
+import Concerts from './components/Concerts';
+import Contracts from './components/Contracts';
 
 const API_BASE_URL = 'http://localhost:4000/api';
 
 function App() {
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1 style={{ color: '#333', borderBottom: '2px solid #4CAF50', paddingBottom: '10px' }}>
-        🎵 Artist Management System
-      </h1>
-      
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '30px' }}>
-        <div>
-          <Artists apiUrl={API_BASE_URL} />
-        </div>
-        <div>
-          <Albums apiUrl={API_BASE_URL} />
-        </div>
+    <Router>
+      <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
+        <Navigation />
+        <Routes>
+          <Route path="/" element={<Dashboard apiUrl={API_BASE_URL} />} />
+          <Route path="/artists" element={<Artists apiUrl={API_BASE_URL} />} />
+          <Route path="/albums" element={<Albums apiUrl={API_BASE_URL} />} />
+          <Route path="/concerts" element={<Concerts apiUrl={API_BASE_URL} />} />
+          <Route path="/contracts" element={<Contracts apiUrl={API_BASE_URL} />} />
+        </Routes>
       </div>
-    </div>
+    </Router>
   );
 }
 
 export default App;
-
