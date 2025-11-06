@@ -16,6 +16,16 @@ const Contracts = ({ apiUrl }) => {
     artist_id: ''
   });
 
+  const toDateOnly = (value) => {
+    if (!value) return '';
+    try {
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? '' : d.toISOString().slice(0, 10); // yyyy-MM-dd
+    } catch {
+      return '';
+    }
+  };
+
   useEffect(() => {
     fetchContracts();
     fetchArtists();
@@ -66,7 +76,9 @@ const Contracts = ({ apiUrl }) => {
         body: JSON.stringify({
           ...formData,
           artist_id: parseInt(formData.artist_id),
-          management_fee: formData.management_fee ? parseFloat(formData.management_fee) : null
+          management_fee: formData.management_fee ? parseFloat(formData.management_fee) : null,
+          start_date: toDateOnly(formData.start_date) || null,
+          end_date: toDateOnly(formData.end_date) || null
         }),
       });
 
@@ -108,8 +120,8 @@ const Contracts = ({ apiUrl }) => {
     setFormData({
       contract_type: contract.contract_type || '',
       management_fee: contract.management_fee || '',
-      start_date: contract.start_date || '',
-      end_date: contract.end_date || '',
+      start_date: toDateOnly(contract.start_date),
+      end_date: toDateOnly(contract.end_date),
       artist_id: contract.artist_id || ''
     });
     setShowForm(true);

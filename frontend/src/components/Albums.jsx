@@ -15,6 +15,16 @@ const Albums = ({ apiUrl }) => {
     artist_id: ''
   });
 
+  const toDateOnly = (value) => {
+    if (!value) return '';
+    try {
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? '' : d.toISOString().slice(0, 10);
+    } catch {
+      return '';
+    }
+  };
+
   useEffect(() => {
     fetchAlbums();
     fetchArtists();
@@ -64,6 +74,7 @@ const Albums = ({ apiUrl }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
+          release_date: toDateOnly(formData.release_date) || null,
           artist_id: parseInt(formData.artist_id)
         }),
       });
@@ -105,7 +116,7 @@ const Albums = ({ apiUrl }) => {
     setEditingAlbum(album);
     setFormData({
       title: album.title || '',
-      release_date: album.release_date || '',
+      release_date: toDateOnly(album.release_date),
       total_tracks: album.total_tracks || '',
       artist_id: album.artist_id || ''
     });

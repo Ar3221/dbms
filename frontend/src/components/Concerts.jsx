@@ -16,6 +16,16 @@ const Concerts = ({ apiUrl }) => {
     artist_id: ''
   });
 
+  const toDateOnly = (value) => {
+    if (!value) return '';
+    try {
+      const d = new Date(value);
+      return isNaN(d.getTime()) ? '' : d.toISOString().slice(0, 10);
+    } catch {
+      return '';
+    }
+  };
+
   useEffect(() => {
     fetchConcerts();
     fetchArtists();
@@ -66,6 +76,7 @@ const Concerts = ({ apiUrl }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
+          concert_date: toDateOnly(formData.concert_date) || null,
           artist_id: parseInt(formData.artist_id),
           ticket_price: formData.ticket_price ? parseFloat(formData.ticket_price) : null
         }),
@@ -109,7 +120,7 @@ const Concerts = ({ apiUrl }) => {
     setFormData({
       concert_name: concert.concert_name || '',
       location: concert.location || '',
-      concert_date: concert.concert_date || '',
+      concert_date: toDateOnly(concert.concert_date),
       ticket_price: concert.ticket_price || '',
       artist_id: concert.artist_id || ''
     });
