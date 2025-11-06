@@ -117,6 +117,31 @@ app.get('/api/albums', async (req, res) => {
   }
 });
 
+// POST /api/albums - Add new album
+app.post('/api/albums', async (req, res) => {
+  try {
+    const { title, release_date, total_tracks, artist_id } = req.body;
+
+    if (!title || !artist_id) {
+      return res.status(400).json({ error: 'Album title and artist_id are required' });
+    }
+
+    const [result] = await db.query(
+      'INSERT INTO Albums (title, release_date, total_tracks, artist_id) VALUES (?, ?, ?, ?)',
+      [title, release_date || null, total_tracks || null, artist_id]
+    );
+
+    console.log('\x1b[32m%s\x1b[0m', `✅ Album added: ${title}`);
+    res.status(201).json({
+      message: 'Album added successfully',
+      album_id: result.insertId
+    });
+  } catch (error) {
+    console.error('\x1b[31m%s\x1b[0m', '❌ Error adding album:', error.message);
+    res.status(500).json({ error: 'Failed to add album' });
+  }
+});
+
 // PUT /api/albums/:id - Update album
 app.put('/api/albums/:id', async (req, res) => {
   try {
