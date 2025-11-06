@@ -25,6 +25,31 @@ app.get('/api/artists', async (req, res) => {
   }
 });
 
+// POST /api/artists - Add new artist
+app.post('/api/artists', async (req, res) => {
+  try {
+    const { first_name, last_name, stage_name, genre, debut_year } = req.body;
+
+    if (!first_name || !stage_name) {
+      return res.status(400).json({ error: 'First name and stage name are required' });
+    }
+
+    const [result] = await db.query(
+      'INSERT INTO Artists (first_name, last_name, stage_name, genre, debut_year) VALUES (?, ?, ?, ?, ?)',
+      [first_name, last_name || null, stage_name, genre || null, debut_year || null]
+    );
+
+    console.log('\x1b[32m%s\x1b[0m', `✅ Artist added: ${stage_name}`);
+    res.status(201).json({
+      message: 'Artist added successfully',
+      artist_id: result.insertId
+    });
+  } catch (error) {
+    console.error('\x1b[31m%s\x1b[0m', '❌ Error adding artist:', error.message);
+    res.status(500).json({ error: 'Failed to add artist' });
+  }
+});
+
 // PUT /api/artists/:id - Update artist
 app.put('/api/artists/:id', async (req, res) => {
   try {
